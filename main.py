@@ -1,16 +1,21 @@
-# This is a sample Python script.
+from bs4 import BeautifulSoup
+from selenium import webdriver
+import time
+import csv
 
-# Press Mayús+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+def scrap_ryanair():
+    location = "C:/Users/Acer/PycharmProjects/web-scraping/chromedriver.exe"  # driver location
+    driver = webdriver.Chrome(location)
+    home_url = "https://www.ryanair.com/"
+    driver.get(home_url)
+    page = BeautifulSoup(driver.page_source, 'html.parser')
+    cookies_window = driver.find_element_by_class_name('cookie-popup-with-overlay__button')
+    cookies_window.click()
+    while True:
+        pass
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    scrap_ryanair()
