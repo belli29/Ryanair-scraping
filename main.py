@@ -8,34 +8,20 @@ import time
 def scrap_ryanair():
     location = "C:/Users/Acer/PycharmProjects/web-scraping/chromedriver.exe"  # driver location
     driver = webdriver.Chrome(location)
-    home_url = "https://www.ryanair.com/es/es"
-    driver.get(home_url)
-    page = BeautifulSoup(driver.page_source, 'html.parser')
-    # accept cookies window
-    cookies_window = driver.find_element_by_class_name('cookie-popup-with-overlay__button')
-    cookies_window.click()
 
     # user inputs
-    from_airport = "Berlin Brandenburg"
-    to_airport = "Alicante"
-    arrival = "10/2/25"
-    departure = "13/2/29"
+    from_ = "BCN"
+    to_ = "BGY"
+    departure = "2021-06-22"
+    arrival = "2021-06-24"
 
-    # fill in fields
-    fields = {'departure': from_airport, 'destination': to_airport, 'dates-from':arrival, 'dates-to':departure}
+    def compose_url(from_,to_,arrival,departure):
+        home_url = "https://www.ryanair.com/en/en/"
+        url = f"{home_url}trip/flights/select?adults=1&teens=0&children=0&infants=0&dateOut={departure}&dateIn={arrival}&isConnectedFlight=false&isReturn=true&discount=0&promoCode=&originIata={from_}&destinationIata={to_}&tpAdults=1&tpTeens=0&tpChildren=0&tpInfants=0&tpStartDate={departure}&tpEndDate={arrival}&tpDiscount=0&tpPromoCode=&tpOriginIata={from_}&tpDestinationIata={to_}"
+        return url
 
-    # add user input departure and destination
-    for field in fields:
-        if field == 'dates-from':
-            break
-        # trigger displaying date fields
-        element = driver.find_element_by_id("input-button__" + field)
-        element.send_keys(Keys.CONTROL + "a")
-        element.send_keys(Keys.DELETE)
-        element.send_keys(fields[field])
-    # display date fields
-    search_element = driver.find_element_by_class_name("flight-search-widget__start-search")
-    search_element.click()
+    driver.get(compose_url(from_, to_, arrival, departure))
+
     while True:
         pass
 
