@@ -25,7 +25,7 @@ def scrap_ryanair():
     # parse the page
     results_page = BeautifulSoup(driver.page_source, 'html.parser')
     # find dates and fares
-    fares = []
+    fares = {}
     results =results_page.findAll('carousel-item', attrs = {'class' : 'ng-star-inserted'})
     for result in results:
         # find price
@@ -36,17 +36,9 @@ def scrap_ryanair():
         date_day = result.find('span', attrs ={'class': 'date-item__day-of-month'})
         date_month = result.find('span', attrs ={'class': 'date-item__month'})
         date = date_day.text.strip() + ' ' + date_month.text.strip()
-
-
-
-
-
-    print(results)
-
-
-
-
-
+        # add entry
+        fares[date] = price
+    print(fares)
     while True:
         pass
 
