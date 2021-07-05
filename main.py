@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
+import datetime
 import time
 import csv
 from selenium.webdriver.common.keys import Keys
@@ -9,9 +10,23 @@ def scrap_ryanair():
     driver = webdriver.Chrome(location)
 
     # user inputs
-    from_ = "BCN"
-    to_ = "BGY"
-    departure = "2021-07-29"
+    from_ = input('Where do you want to fly from ?')
+    to_ = input('Where do you want to fly to ?')
+    departure = input('When do you want to fly to ? \n Use this format yyyy-mm-dd')
+
+    def validate_departure_date(date_departure):
+        validation = True
+        while validation:
+            try:
+                datetime.datetime.strptime(date_departure, '%Y-%m-%d')
+                validation = False
+            except ValueError:
+                date_departure = input('Incorrect data format, should be YYYY-MM-DD \n'
+                                  'Where do you want to fly to ?')
+                continue
+        return date_departure
+
+    validate_departure_date(departure)
 
     def compose_url(from_,to_,departure):
         home_url = "https://www.ryanair.com/en/en/"
