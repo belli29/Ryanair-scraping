@@ -3,17 +3,33 @@ from selenium import webdriver
 import datetime
 import time
 import csv
-from selenium.webdriver.common.keys import Keys
+
 
 def scrap_ryanair():
     location = "C:/Users/Acer/PycharmProjects/web-scraping/chromedriver.exe"  # driver location
     driver = webdriver.Chrome(location)
 
     # user inputs
-    from_ = input('Where do you want to fly from ?')
-    to_ = input('Where do you want to fly to ?')
-    departure = input('When do you want to fly to ? \n Use this format yyyy-mm-dd')
+    from_validation = False
+    to_validation = False
+    ryanair_airports = {
+        'BCN': 'Barcelona el Prat',
+        'BGY': 'Orio Al Serio',
 
+    }
+
+
+    # IATA validation function
+    def validate_airport(user_choice):
+        try:
+            ryanair_airports[user_choice]
+            valid = True
+        except KeyError :
+            valid = False
+        return valid
+
+
+    # date format validation function
     def validate_departure_date(date_departure):
         validation = True
         while validation:
@@ -26,8 +42,22 @@ def scrap_ryanair():
                 continue
         return date_departure
 
+    # from airport validation loop
+    while not from_validation:
+        from_ = input('Where do you want to fly from ? '
+                      '\n Please specify IATA code: ').upper()
+        from_validation = validate_airport(from_)
+
+    # to airport validation loop
+    while not to_validation:
+        to_ = input('Where do you want to fly to ? '
+                    '\n Please specify IATA code: ').upper()
+        to_validation = validate_airport(to_)
+    # departure date validation loop
+    departure = input('Where do you want to fly from ? \n Use this format yyyy-mm-dd')
     validate_departure_date(departure)
 
+    #compose the url with validate user imput
     def compose_url(from_,to_,departure):
         home_url = "https://www.ryanair.com/en/en/"
         url = f"{home_url}trip/flights/select?adults=1&teens=0&children=0&infants=0&dateOut={departure}&dateIn=&isConnectedFlight=false&isReturn=false&discount=0&promoCode=&originIata={from_}&destinationIata={to_}&tpAdults=1&tpTeens=0&tpChildren=0&tpInfants=0&tpStartDate={departure}&tpEndDate=&tpDiscount=0&tpPromoCode=&tpOriginIata={from_}&tpDestinationIata={to_}"
