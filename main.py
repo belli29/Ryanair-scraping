@@ -1,8 +1,6 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import datetime
-import time
-import csv
 
 
 def scrap_ryanair():
@@ -15,47 +13,30 @@ def scrap_ryanair():
     ryanair_airports = {
         'BCN': 'Barcelona el Prat',
         'BGY': 'Orio Al Serio',
-
     }
 
-
-    # IATA validation function
-    def validate_airport(user_choice):
-        try:
-            ryanair_airports[user_choice]
-            valid = True
-        except KeyError :
-            valid = False
-        return valid
-
-
-    # date format validation function
-    def validate_departure_date(date_departure):
-        validation = True
-        while validation:
-            try:
-                datetime.datetime.strptime(date_departure, '%Y-%m-%d')
-                validation = False
-            except ValueError:
-                date_departure = input('Incorrect data format, should be YYYY-MM-DD \n'
-                                  'Where do you want to fly to ?')
-                continue
-        return date_departure
-
     # from airport validation loop
-    while not from_validation:
-        from_ = input('Where do you want to fly from ? '
-                      '\n Please specify IATA code: ').upper()
-        from_validation = validate_airport(from_)
-
+    from_ = input('Where do you want to fly from ? '
+                  '\n Please specify IATA code: ')
+    while not from_.upper() in ryanair_airports.__iter__():
+        from_ = input('Wrong IATA code\n'
+                      'please specify where you want to fly from: ')
     # to airport validation loop
-    while not to_validation:
-        to_ = input('Where do you want to fly to ? '
-                    '\n Please specify IATA code: ').upper()
-        to_validation = validate_airport(to_)
-    # departure date validation loop
-    departure = input('Where do you want to fly from ? \n Use this format yyyy-mm-dd')
-    validate_departure_date(departure)
+    to_ = input('Where do you want to fly to ? '
+                  '\n Please specify IATA code: ')
+    while not to_.upper() in ryanair_airports.__iter__():
+        to_ = input('Wrong IATA code\n'
+                      'Please specify where you want to fly to: ')
+    # departure destination loop
+    departure =input('When do you want to fly?\n'
+                     'Use format YYYY-MM-DD: ')
+    while True:
+        try:
+            datetime.datetime.strptime(departure, '%Y-%m-%d')
+            break
+        except:
+            departure = input('Wrong format\n'
+                              'Please use format YYYY-MM-DD: ')
 
     #compose the url with validate user imput
     def compose_url(from_,to_,departure):
@@ -84,8 +65,13 @@ def scrap_ryanair():
         # add entry
         fares[date] = price
     print(fares)
-    while True:
-        pass
+    cheapest_day = min(fares, key=fares.get)
+    selected_day = list(fares.keys())[2]
+    print(f'On {selected_day} the cheapest flight from {ryanair_airports[from_.upper()]} to {ryanair_airports[to_.upper()]} costs Eur {fares[selected_day]}')
+    if (cheapest_day != selected_day) and (fares[cheapest_day] != fares[selected_day]):
+        print(f'Hey, there is actually a cheaper flight on {cheapest_day} at Eur {fares[cheapest_day]}')
+    else:
+        print('In nearby days no cheaper rate can be found')
 
 if __name__ == '__main__':
     scrap_ryanair()
