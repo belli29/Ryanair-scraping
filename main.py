@@ -1,11 +1,16 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import datetime
+from selenium.webdriver.chrome.options import Options
 
 
 def scrap_ryanair():
-    location = "C:/Users/Acer/PycharmProjects/web-scraping/chromedriver.exe"  # driver location
-    driver = webdriver.Chrome(location)
+
+    # creatng webdriver instance working also on docker
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    driver = webdriver.Chrome(chrome_options= chrome_options)
 
     # user inputs
     from_validation = False
