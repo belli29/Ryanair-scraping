@@ -59,24 +59,30 @@ def scrap_ryanair():
     fares = {}
     results =results_page.findAll('carousel-item', attrs = {'class' : 'ng-star-inserted'})
     for result in results:
-        # find price
-        price_integer = result.find('span', attrs = {'class': 'price__integers'})
-        price_decimals = result.find('span', attrs = {'class': 'price__decimals'})
-        price = price_integer.text.strip() + '.' + price_decimals.text.strip()
         # find date
         date_day = result.find('span', attrs ={'class': 'date-item__day-of-month'})
         date_month = result.find('span', attrs ={'class': 'date-item__month'})
         date = date_day.text.strip() + ' ' + date_month.text.strip()
+        # find price
+        try:
+            price_integer = result.find('span', attrs = {'class': 'price__integers'})
+            price_decimals = result.find('span', attrs = {'class': 'price__decimals'})
+            price = float(price_integer.text.strip() + '.' + price_decimals.text.strip())
+        except :
+            price = 999999
         # add entry
         fares[date] = price
     print(fares)
     cheapest_day = min(fares, key=fares.get)
     selected_day = list(fares.keys())[2]
-    print(f'On {selected_day} the cheapest flight from {ryanair_airports[from_.upper()]} to {ryanair_airports[to_.upper()]} costs Eur {fares[selected_day]}')
-    if (cheapest_day != selected_day) and (fares[cheapest_day] != fares[selected_day]):
-        print(f'Hey, there is actually a cheaper flight on {cheapest_day} at Eur {fares[cheapest_day]}')
+    if fares[selected_day] == 999999:
+        print (f'On {selected_day} there is no flight available')
     else:
-        print('In nearby days no cheaper rate can be found')
+        print(f'On {selected_day} the cheapest flight from {ryanair_airports[from_.upper()]} to {ryanair_airports[to_.upper()]} costs Eur {fares[selected_day]}')
+        if (cheapest_day != selected_day) and (fares[cheapest_day] != fares[selected_day]):
+            print(f'Hey, there is actually a cheaper flight on {cheapest_day} at Eur {fares[cheapest_day]}')
+        else:
+            print('In nearby days no cheaper rate can be found')
 
 if __name__ == '__main__':
     scrap_ryanair()
