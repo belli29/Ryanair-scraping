@@ -18,6 +18,15 @@ def scrap_ryanair():
     ryanair_airports = {
         'BCN': 'Barcelona el Prat',
         'BGY': 'Orio Al Serio',
+        'STN': 'London-Stansted',
+        'DUB': 'Dublin',
+        'CRL': 'Charleroi',
+        'ALC': 'Alicante',
+        'KRK': 'Kraków',
+        'PSA': 'Pisa',
+        'CIA': 'Rome-Ciampino',
+        'MAD': 'Madrid',
+        'GRO': 'Girona',
     }
 
     # from airport validation loop
